@@ -69,7 +69,7 @@ export async function updateProduct(
 }
 
 // Delete a product
-export async function deleteProduct(productId: string) {
+export async function deleteProduct(productId: string, imageUrl: string) {
   try {
     // Delete product from Firestore
     await deleteDoc(doc(db, 'products', productId));
