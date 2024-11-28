@@ -100,7 +100,7 @@ export default function ProductsPage() {
           transition={{ duration: 0.5 }}
           className="text-center py-16"
         >
-          <p className="text-xl text-gray-600">No products found.</p>
+          <p className="text-xl text-gray-600">Please SignUp with Doda to view Available Products.</p>
         </motion.div>
       ) : (
         <motion.div
