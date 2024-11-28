@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { User } from "firebase/auth";
-import { onAuthStateChange } from "@/lib/auth";
+import { onAuthStateChange, handleGoogleSignInRedirect } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 
 interface AuthContextType {
@@ -24,6 +24,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
+    const checkRedirectResult = async () => {
+      try {
+        await handleGoogleSignInRedirect();
+      } catch (error) {
+        console.error('Error handling redirect:', error);
+      }
+    };
+
+    checkRedirectResult();
+
     const unsubscribe = onAuthStateChange((user) => {
       setUser(user);
 
@@ -35,9 +45,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
 
       if (isAdminUser) {
-        router.push("/admin"); // Redirect to admin dashboard if admin
+        router.push("/admin");
       } else if (!user) {
-        router.push("/"); // Redirect to home if not authenticated
+        router.push("/");
       }
     });
 

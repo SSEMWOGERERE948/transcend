@@ -2,6 +2,7 @@ import { auth } from '@/lib/firebase';
 import {
   GoogleAuthProvider,
   signInWithPopup,
+  getRedirectResult,
   signOut as firebaseSignOut,
   onAuthStateChanged,
   User
@@ -23,6 +24,18 @@ export const signOut = async () => {
     await firebaseSignOut(auth);
   } catch (error) {
     console.error('Error signing out:', error);
+    throw error;
+  }
+};
+
+export const handleGoogleSignInRedirect = async () => {
+  try {
+    const result = await getRedirectResult(auth);
+    if (result) {
+      return result.user;
+    }
+  } catch (error) {
+    console.error('Error handling Google Sign-In redirect:', error);
     throw error;
   }
 };
