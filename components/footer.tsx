@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ShoppingBag, Facebook, Instagram, Twitter } from 'lucide-react';
+import {  Facebook, Instagram, Twitter } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -8,10 +8,14 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <Link href="/" className="flex items-center space-x-2">
-              <ShoppingBag className="h-6 w-6 text-purple-600" />
-              <span className="text-xl font-bold text-purple-600">Doda</span>
-            </Link>
+          <Link href="/" className="flex items-center space-x-2">
+          <img
+            src="/logo.jpg"
+            alt="Doda Logo"
+            className="h-12 w-12" // Updated size
+            />
+          <span className="text-xl font-bold text-purple-600">Doda</span>
+        </Link>
             <p className="text-gray-600">
               Crafting joy through handmade crochet pieces, bringing warmth and style to your everyday life.
             </p>
@@ -38,9 +42,9 @@ export function Footer() {
           <div>
             <h3 className="font-semibold mb-4">Contact</h3>
             <ul className="space-y-2 text-gray-600">
-              <li>Nairobi, Kenya</li>
-              <li>hello@doda.com</li>
-              <li>+254 XXX XXX XXX</li>
+              <li>Kampala, Uganda</li>
+              <li>dodacrochets@gmail.com</li>
+              <li>+256 726 219 235</li>
             </ul>
           </div>
 

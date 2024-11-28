@@ -55,7 +55,7 @@ export function AdminProductList({ products, setProducts }: AdminProductListProp
               />
             </div>
             <CardTitle>{product.name}</CardTitle>
-            <CardDescription>${product.price}</CardDescription>
+            <CardDescription>ugx{product.price}</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-gray-500 mb-4">{product.description}</p>

@@ -34,7 +34,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
         <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
         <p className="text-gray-600 mb-2 line-clamp-2">{product.description}</p>
-        <p className="text-xl font-bold text-purple-600">${product.price.toFixed(2)}</p>
+        <p className="text-xl font-bold text-purple-600">ugx{product.price.toFixed(2)}</p>
       </CardContent>
       <CardFooter className="p-4 pt-0 flex gap-2">
         <WhatsAppButton product={product} compact />

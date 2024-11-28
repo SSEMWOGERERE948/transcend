@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -28,36 +29,55 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="container mx-auto py-16">
-      <h1 className="text-4xl font-bold text-center mb-8">Contact Us</h1>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="container mx-auto py-16 px-4 sm:px-6 lg:px-8"
+    >
+      <h1 className="text-4xl font-bold text-center mb-12 text-purple-800">Contact Us</h1>
       
       <div className="grid md:grid-cols-2 gap-12">
         {/* Contact Information */}
-        <div>
-          <h2 className="text-2xl font-semibold mb-6">Get in Touch</h2>
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <h2 className="text-2xl font-semibold mb-6 text-purple-700">Get in Touch</h2>
           <p className="text-gray-600 mb-8">
             Have questions about our products or custom orders? We'd love to hear from you!
           </p>
           
           <div className="space-y-6">
-            {contactInfo.map((item) => (
-              <div key={item.label} className="flex items-start space-x-4">
+            {contactInfo.map((item, index) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
+                className="flex items-start space-x-4"
+              >
                 <div className="flex-shrink-0">
                   <div className="p-3 bg-purple-100 rounded-full">
                     {item.icon}
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-medium">{item.label}</h3>
+                  <h3 className="font-medium text-purple-700">{item.label}</h3>
                   <p className="text-gray-600">{item.value}</p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Contact Form */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -68,6 +88,7 @@ export default function ContactPage() {
                 name="name"
                 required
                 placeholder="Your name"
+                className="bg-white border-purple-300 focus:border-purple-500 focus:ring-purple-500"
               />
             </div>
 
@@ -81,6 +102,7 @@ export default function ContactPage() {
                 type="email"
                 required
                 placeholder="your@email.com"
+                className="bg-white border-purple-300 focus:border-purple-500 focus:ring-purple-500"
               />
             </div>
 
@@ -93,6 +115,7 @@ export default function ContactPage() {
                 name="subject"
                 required
                 placeholder="How can we help?"
+                className="bg-white border-purple-300 focus:border-purple-500 focus:ring-purple-500"
               />
             </div>
 
@@ -106,20 +129,21 @@ export default function ContactPage() {
                 required
                 placeholder="Your message"
                 rows={4}
+                className="bg-white border-purple-300 focus:border-purple-500 focus:ring-purple-500"
               />
             </div>
 
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-purple-600 hover:bg-purple-700"
+              className="w-full bg-purple-600 hover:bg-purple-700 transition-colors duration-300"
             >
               {isSubmitting ? 'Sending...' : 'Send Message'}
             </Button>
           </form>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -127,21 +151,21 @@ const contactInfo = [
   {
     icon: <MessageCircle className="h-6 w-6 text-purple-600" />,
     label: "WhatsApp",
-    value: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "Contact us on WhatsApp",
+    value: +256726219235 || "Contact us on WhatsApp",
   },
   {
     icon: <Mail className="h-6 w-6 text-purple-600" />,
     label: "Email",
-    value: "hello@doda.com",
+    value: "dodacrochets@gmail.com",
   },
   {
     icon: <MapPin className="h-6 w-6 text-purple-600" />,
     label: "Location",
-    value: "Nairobi, Kenya",
+    value: "Kampala, Uganda",
   },
   {
     icon: <Phone className="h-6 w-6 text-purple-600" />,
     label: "Phone",
-    value: "+254 XXX XXX XXX",
+    value: "+256 726 219 235",
   },
 ];

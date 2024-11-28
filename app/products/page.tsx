@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { Product, getProducts } from '@/lib/products';
 import { ProductCard } from '@/components/products/product-card';
 import { ProductFilter } from '@/components/products/product-filter';
@@ -53,25 +54,37 @@ export default function ProductsPage() {
   if (isLoading) {
     return (
       <div className="container mx-auto py-16 text-center">
-        <div className="animate-pulse">Loading products...</div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="animate-pulse text-2xl font-semibold text-purple-600"
+        >
+          Loading products...
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-4xl font-bold text-center mb-8">Our Products</h1>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="container mx-auto py-12 px-4 sm:px-6 lg:px-8"
+    >
+      <h1 className="text-4xl font-bold text-center mb-12 text-purple-800">Our Products</h1>
       
-      <div className="flex flex-col md:flex-row gap-4 mb-8">
+      <div className="flex flex-col md:flex-row gap-6 mb-12">
         <div className="relative flex-1">
           <Input
             type="text"
             placeholder="Search products..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            className="pl-10 bg-white border-purple-300 focus:border-purple-500 focus:ring-purple-500"
           />
-          <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+          <Search className="absolute left-3 top-2.5 h-5 w-5 text-purple-400" />
         </div>
         <ProductFilter
           categories={categories}
@@ -81,17 +94,33 @@ export default function ProductsPage() {
       </div>
 
       {filteredProducts.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="text-gray-500">No products found.</p>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center py-16"
+        >
+          <p className="text-xl text-gray-600">No products found.</p>
+        </motion.div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          {filteredProducts.map((product, index) => (
+            <motion.div
+              key={product.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+            >
+              <ProductCard product={product} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }
-

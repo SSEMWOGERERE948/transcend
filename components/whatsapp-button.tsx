@@ -12,7 +12,7 @@ interface WhatsAppButtonProps {
 export function WhatsAppButton({ product, compact = false }: WhatsAppButtonProps) {
   const handleWhatsAppClick = () => {
     const message = `Hi! I'm interested in purchasing "${product.name}" for $${product.price}`;
-    const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+    const whatsappNumber = "+256 726 219235";
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
