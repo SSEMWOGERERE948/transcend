@@ -24,36 +24,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    const checkRedirectResult = async () => {
+    const initializeAuth = async () => {
+      setLoading(true);
+  
       try {
-        await handleGoogleSignInRedirect();
+        await handleGoogleSignInRedirect(); // Handle redirect result first
+        const unsubscribe = onAuthStateChange((user) => {
+          setUser(user);
+  
+          const adminEmail = "strevor948@gmail.com";
+          const userEmail = user?.email?.toLowerCase();
+          const isAdminUser = userEmail === adminEmail;
+  
+          setIsAdmin(isAdminUser);
+  
+          if (isAdminUser) {
+            router.push("/admin");
+          } else if (!user) {
+            router.push("/");
+          }
+          setLoading(false);
+        });
+  
+        return unsubscribe;
       } catch (error) {
-        console.error('Error handling redirect:', error);
+        console.error('Error during initialization:', error);
+        setLoading(false);
       }
     };
-
-    checkRedirectResult();
-
-    const unsubscribe = onAuthStateChange((user) => {
-      setUser(user);
-
-      const adminEmail = "strevor948@gmail.com";
-      const userEmail = user?.email?.toLowerCase();
-
-      const isAdminUser = userEmail === adminEmail;
-      setIsAdmin(isAdminUser);
-      setLoading(false);
-
-      if (isAdminUser) {
-        router.push("/admin");
-      } else if (!user) {
-        router.push("/");
-      }
-    });
-
-    return () => unsubscribe();
+  
+    initializeAuth();
   }, [router]);
-
+  
   return (
     <AuthContext.Provider value={{ user, isAdmin, loading }}>
       {children}
