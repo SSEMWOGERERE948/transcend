@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { User } from "firebase/auth";
-import { onAuthStateChange, handleGoogleSignInRedirect } from "@/lib/auth";
+import { onAuthStateChange } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 
 interface AuthContextType {
@@ -24,38 +24,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    const initializeAuth = async () => {
-      setLoading(true);
-  
-      try {
-        await handleGoogleSignInRedirect(); // Handle redirect result first
-        const unsubscribe = onAuthStateChange((user) => {
-          setUser(user);
-  
-          const adminEmail = "strevor948@gmail.com";
-          const userEmail = user?.email?.toLowerCase();
-          const isAdminUser = userEmail === adminEmail;
-  
-          setIsAdmin(isAdminUser);
-  
-          if (isAdminUser) {
-            router.push("/admin");
-          } else if (!user) {
-            router.push("/");
-          }
-          setLoading(false);
-        });
-  
-        return unsubscribe;
-      } catch (error) {
-        console.error('Error during initialization:', error);
-        setLoading(false);
+    const unsubscribe = onAuthStateChange((user) => {
+      setUser(user);
+
+      const adminEmail = "strevor948@gmail.com";
+      const userEmail = user?.email?.toLowerCase();
+
+      const isAdminUser = userEmail === adminEmail;
+      setIsAdmin(isAdminUser);
+      setLoading(false);
+
+      if (isAdminUser) {
+        router.push("/admin"); // Redirect to admin dashboard if admin
+      } else if (!user) {
+        router.push("/"); // Redirect to home if not authenticated
       }
-    };
-  
-    initializeAuth();
+    });
+
+    return () => unsubscribe();
   }, [router]);
-  
+
   return (
     <AuthContext.Provider value={{ user, isAdmin, loading }}>
       {children}
