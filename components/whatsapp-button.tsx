@@ -1,17 +1,17 @@
 "use client";
 
 import { Button } from '@/components/ui/button';
-import { Product } from '@/lib/scholarships';
+import { Scholarship } from '@/lib/scholarships';
 import { MessageCircle } from 'lucide-react';
 
 interface WhatsAppButtonProps {
-  product: Product;
+  scholarship: Scholarship;
   compact?: boolean;
 }
 
-export function WhatsAppButton({ product, compact = false }: WhatsAppButtonProps) {
+export function WhatsAppButton({ scholarship, compact = false }: WhatsAppButtonProps) {
   const handleWhatsAppClick = () => {
-    const message = `Hi! I'm interested in purchasing "${product.name}" for $${product.price}`;
+    const message = `Hi! I'm interested in purchasing "${scholarship.name}" for $${scholarship.price}`;
     const whatsappNumber = "+256 726 219235";
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
