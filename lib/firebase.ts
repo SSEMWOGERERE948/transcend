@@ -3,13 +3,13 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCk3j484FDucPKy5IgdymkAx66Rf9rGOZ8",
-  authDomain: "doda-2f906.firebaseapp.com",
-  projectId: "doda-2f906",
-  storageBucket: "doda-2f906.appspot.com",
-  messagingSenderId: "408553173318",
-  appId: "1:408553173318:web:921af50c3907c9e0f0b547",
-  measurementId: "G-9VYFSH98HZ",
+  apiKey: "AIzaSyBJpDk7Db5I5fcXYdEjVHNJewXOvD0pvw8",
+  authDomain: "transcend-28bd6.firebaseapp.com",
+  projectId: "transcend-28bd6",
+  storageBucket: "transcend-28bd6.firebasestorage.app",
+  messagingSenderId: "211502500156",
+  appId: "1:211502500156:web:6a3cc18729739983127639",
+  measurementId: "G-TKD2066DMM"
 };
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];

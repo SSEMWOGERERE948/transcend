@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Heart, Package, Sparkles } from 'lucide-react';
+import { GraduationCap, Globe, Users } from 'lucide-react';
 
 export default function AboutPage() {
   return (
@@ -21,9 +21,9 @@ export default function AboutPage() {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="text-center mb-16"
       >
-        <h1 className="text-4xl font-bold mb-6 text-purple-800">About Doda</h1>
+        <h1 className="text-4xl font-bold mb-6 text-blue-800">About Transcend Education</h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          Crafting joy through handmade crochet pieces, bringing warmth and style to your everyday life.
+          Empowering students with global education opportunities, guiding them towards a brighter future through study abroad programs in China and India.
         </p>
       </motion.div>
 
@@ -36,8 +36,8 @@ export default function AboutPage() {
           className="relative aspect-square"
         >
           <Image
-            src="/crochet_top3.jpg"
-            alt="Crocheting"
+            src="/flier.png"
+            alt="Students studying abroad"
             fill
             className="object-cover rounded-lg shadow-lg"
           />
@@ -47,19 +47,16 @@ export default function AboutPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <h2 className="text-3xl font-bold mb-4 text-purple-700">Our Story</h2>
+          <h2 className="text-3xl font-bold mb-4 text-blue-700">Our Story</h2>
           <p className="text-gray-600 mb-6">
-            Doda began as a passion project, born from the love of creating beautiful, handcrafted 
-            pieces that bring joy to people's lives. What started as a hobby has blossomed into a 
-            thriving business, dedicated to sharing the art of crochet with the world.
+            Transcend Education Consultants Limited began as a vision to connect ambitious students with world-class international education opportunities. What started as a small consultancy has grown into a trusted partner for students seeking to expand their horizons through study abroad programs in China and India.
           </p>
           <p className="text-gray-600 mb-6">
-            Each piece is carefully crafted with attention to detail and love, ensuring that every 
-            customer receives a unique, high-quality product that they'll cherish for years to come.
+            Our team of experienced education consultants is dedicated to guiding students through every step of their journey, from program selection to visa applications and pre-departure preparation.
           </p>
-          <Link href="/products">
-            <Button className="bg-purple-600 hover:bg-purple-700 transition-colors duration-300">
-              Explore Our Collection
+          <Link href="/scholarships">
+            <Button className="bg-blue-600 hover:bg-blue-700 transition-colors duration-300">
+              Explore Our Programs
             </Button>
           </Link>
         </motion.div>
@@ -78,12 +75,12 @@ export default function AboutPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-            className="text-center p-6 rounded-lg border border-purple-200 hover:shadow-lg transition-all duration-300"
+            className="text-center p-6 rounded-lg border border-blue-200 hover:shadow-lg transition-all duration-300"
           >
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 mb-4">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 mb-4">
               {value.icon}
             </div>
-            <h3 className="text-xl font-semibold mb-2 text-purple-700">{value.title}</h3>
+            <h3 className="text-xl font-semibold mb-2 text-blue-700">{value.title}</h3>
             <p className="text-gray-600">{value.description}</p>
           </motion.div>
         ))}
@@ -94,15 +91,15 @@ export default function AboutPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
-        className="text-center bg-purple-50 rounded-lg p-8 shadow-md"
+        className="text-center bg-blue-50 rounded-lg p-8 shadow-md"
       >
-        <h2 className="text-3xl font-bold mb-4 text-purple-800">Ready to Start Shopping?</h2>
+        <h2 className="text-3xl font-bold mb-4 text-blue-800">Ready to Start Your Journey?</h2>
         <p className="text-gray-600 mb-6">
-          Discover our collection of handmade crochet pieces and find your perfect match.
+          Explore our study abroad programs and take the first step towards your international education.
         </p>
-        <Link href="/products">
-          <Button className="bg-purple-600 hover:bg-purple-700 transition-colors duration-300">
-            View Products
+        <Link href="/scholarships">
+          <Button className="bg-blue-600 hover:bg-blue-700 transition-colors duration-300">
+            View Programs
           </Button>
         </Link>
       </motion.div>
@@ -112,18 +109,19 @@ export default function AboutPage() {
 
 const values = [
   {
-    title: "Handcrafted with Love",
-    description: "Every piece is made with care and attention to detail, ensuring the highest quality.",
-    icon: <Heart className="w-6 h-6 text-purple-600" />,
+    title: "Expert Guidance",
+    description: "Our experienced consultants provide personalized advice to ensure the best fit for each student.",
+    icon: <GraduationCap className="w-6 h-6 text-blue-600" />,
   },
   {
-    title: "Quality Materials",
-    description: "We use only the finest yarns and materials to create long-lasting pieces.",
-    icon: <Sparkles className="w-6 h-6 text-purple-600" />,
+    title: "Global Opportunities",
+    description: "Access to a wide range of international programs in top institutions across China and India.",
+    icon: <Globe className="w-6 h-6 text-blue-600" />,
   },
   {
-    title: "Custom Orders",
-    description: "Get personalized items made just for you, tailored to your preferences.",
-    icon: <Package className="w-6 h-6 text-purple-600" />,
+    title: "Student Support",
+    description: "Comprehensive assistance from application to arrival, ensuring a smooth transition for our students.",
+    icon: <Users className="w-6 h-6 text-blue-600" />,
   },
 ];
+

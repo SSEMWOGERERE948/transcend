@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import {  Facebook, Instagram, Twitter } from 'lucide-react';
+import { Facebook, Instagram, Twitter } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -8,16 +8,16 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-          <Link href="/" className="flex items-center space-x-2">
-          <img
-            src="/logo.jpg"
-            alt="Doda Logo"
-            className="h-12 w-12" // Updated size
-            />
-          <span className="text-xl font-bold text-purple-600">Doda</span>
-        </Link>
+            <Link href="/" className="flex items-center space-x-2">
+              <img
+                src="/logo.png"
+                alt="Transcend Logo"
+                className="h-12 w-12"
+              />
+              <span className="text-xl font-bold text-blue-600">Transcend</span>
+            </Link>
             <p className="text-gray-600">
-              Crafting joy through handmade crochet pieces, bringing warmth and style to your everyday life.
+              Empowering students with global education opportunities, guiding them towards a brighter future.
             </p>
           </div>
 
@@ -29,7 +29,7 @@ export function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-gray-600 hover:text-purple-600 transition-colors"
+                    className="text-gray-600 hover:text-blue-600 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -43,8 +43,8 @@ export function Footer() {
             <h3 className="font-semibold mb-4">Contact</h3>
             <ul className="space-y-2 text-gray-600">
               <li>Kampala, Uganda</li>
-              <li>dodacrochets@gmail.com</li>
-              <li>+256 726 219 235</li>
+              <li>transcendeducationconsults@gmail.com</li>
+              <li>+256 774 831 231</li>
             </ul>
           </div>
 
@@ -58,7 +58,7 @@ export function Footer() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-purple-600 transition-colors"
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
                 >
                   {social.icon}
                 </a>
@@ -68,7 +68,7 @@ export function Footer() {
         </div>
 
         <div className="border-t mt-12 pt-8 text-center text-gray-600">
-          <p>&copy; {new Date().getFullYear()} Doda. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Transcend Education Consultants Limited. All rights reserved.</p>
         </div>
       </div>
     </footer>
@@ -77,7 +77,7 @@ export function Footer() {
 
 const quickLinks = [
   { label: "Home", href: "/" },
-  { label: "Products", href: "/products" },
+  { label: "Programs", href: "/programs" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
@@ -99,3 +99,4 @@ const socialLinks = [
     icon: <Twitter className="h-6 w-6" />,
   },
 ];
+

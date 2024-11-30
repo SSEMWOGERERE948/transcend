@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { MessageCircle, Mail, MapPin, Phone } from 'lucide-react';
-import { useToast } from '@/components/ui/toast';
+import { useToast } from '@/hooks/use-toast';
+import emailjs from '@emailjs/browser';
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -16,16 +17,39 @@ export default function ContactPage() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      const form = e.target as HTMLFormElement;
+      const formData = {
+        to_name: "Transcend Education Consultants",
+        from_name: (form.elements.namedItem('name') as HTMLInputElement).value,
+        from_email: (form.elements.namedItem('email') as HTMLInputElement).value,
+        subject: (form.elements.namedItem('subject') as HTMLInputElement).value,
+        message: (form.elements.namedItem('message') as HTMLTextAreaElement).value,
+      };
 
-    toast({
-      title: "Message sent!",
-      description: "We'll get back to you as soon as possible.",
-    });
+      // Send email using EmailJS
+      await emailjs.send(
+        'service_l6z9b09',
+        'template_ho8av02', // Replace with your template ID
+        formData,
+        'A_wu-7eXRVuAuYviq'
+      );
 
-    setIsSubmitting(false);
-    (e.target as HTMLFormElement).reset();
+      toast({
+        title: "Message sent!",
+        description: "We'll get back to you as soon as possible.",
+      });
+      form.reset();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again later.",
+        variant: "destructive",
+      });
+      console.error('Error sending email:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -35,7 +59,7 @@ export default function ContactPage() {
       transition={{ duration: 0.5 }}
       className="container mx-auto py-16 px-4 sm:px-6 lg:px-8"
     >
-      <h1 className="text-4xl font-bold text-center mb-12 text-purple-800">Contact Us</h1>
+      <h1 className="text-4xl font-bold text-center mb-12 text-blue-800">Contact Us</h1>
       
       <div className="grid md:grid-cols-2 gap-12">
         {/* Contact Information */}
@@ -44,9 +68,9 @@ export default function ContactPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <h2 className="text-2xl font-semibold mb-6 text-purple-700">Get in Touch</h2>
+          <h2 className="text-2xl font-semibold mb-6 text-blue-700">Get in Touch</h2>
           <p className="text-gray-600 mb-8">
-            Have questions about our products or custom orders? We'd love to hear from you!
+            Have questions about our study abroad programs or scholarship opportunities? We're here to help!
           </p>
           
           <div className="space-y-6">
@@ -59,12 +83,12 @@ export default function ContactPage() {
                 className="flex items-start space-x-4"
               >
                 <div className="flex-shrink-0">
-                  <div className="p-3 bg-purple-100 rounded-full">
+                  <div className="p-3 bg-blue-100 rounded-full">
                     {item.icon}
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-medium text-purple-700">{item.label}</h3>
+                  <h3 className="font-medium text-blue-700">{item.label}</h3>
                   <p className="text-gray-600">{item.value}</p>
                 </div>
               </motion.div>
@@ -88,7 +112,7 @@ export default function ContactPage() {
                 name="name"
                 required
                 placeholder="Your name"
-                className="bg-white border-purple-300 focus:border-purple-500 focus:ring-purple-500"
+                className="bg-white border-blue-300 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
 
@@ -102,7 +126,7 @@ export default function ContactPage() {
                 type="email"
                 required
                 placeholder="your@email.com"
-                className="bg-white border-purple-300 focus:border-purple-500 focus:ring-purple-500"
+                className="bg-white border-blue-300 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
 
@@ -114,8 +138,8 @@ export default function ContactPage() {
                 id="subject"
                 name="subject"
                 required
-                placeholder="How can we help?"
-                className="bg-white border-purple-300 focus:border-purple-500 focus:ring-purple-500"
+                placeholder="Inquiry about study programs"
+                className="bg-white border-blue-300 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
 
@@ -129,14 +153,14 @@ export default function ContactPage() {
                 required
                 placeholder="Your message"
                 rows={4}
-                className="bg-white border-purple-300 focus:border-purple-500 focus:ring-purple-500"
+                className="bg-white border-blue-300 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
 
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-purple-600 hover:bg-purple-700 transition-colors duration-300"
+              className="w-full bg-blue-600 hover:bg-blue-700 transition-colors duration-300"
             >
               {isSubmitting ? 'Sending...' : 'Send Message'}
             </Button>
@@ -149,23 +173,24 @@ export default function ContactPage() {
 
 const contactInfo = [
   {
-    icon: <MessageCircle className="h-6 w-6 text-purple-600" />,
+    icon: <MessageCircle className="h-6 w-6 text-blue-600" />,
     label: "WhatsApp",
-    value: +256726219235 || "Contact us on WhatsApp",
+    value: "+256 774 831 231",
   },
   {
-    icon: <Mail className="h-6 w-6 text-purple-600" />,
+    icon: <Mail className="h-6 w-6 text-blue-600" />,
     label: "Email",
-    value: "dodacrochets@gmail.com",
+    value: "transcendeducationconsults@gmail.com",
   },
   {
-    icon: <MapPin className="h-6 w-6 text-purple-600" />,
+    icon: <MapPin className="h-6 w-6 text-blue-600" />,
     label: "Location",
     value: "Kampala, Uganda",
   },
   {
-    icon: <Phone className="h-6 w-6 text-purple-600" />,
+    icon: <Phone className="h-6 w-6 text-blue-600" />,
     label: "Phone",
-    value: "+256 726 219 235",
+    value: "+256 757 251 514",
   },
 ];
+

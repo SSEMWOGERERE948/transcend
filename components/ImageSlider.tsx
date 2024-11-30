@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
@@ -12,14 +12,34 @@ interface ImageSliderProps {
 
 export function ImageSlider({ images }: ImageSliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [isInView, setIsInView] = useState(false)
+  const sliderRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsInView(entry.isIntersecting)
+        })
+      },
+      { threshold: 0.5 } // Trigger when 50% of the slider is visible
+    )
+
+    if (sliderRef.current) {
+      observer.observe(sliderRef.current)
+    }
+
     const timer = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length)
+      if (isInView) {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length)
+      }
     }, 5000)
 
-    return () => clearInterval(timer)
-  }, [images.length])
+    return () => {
+      observer.disconnect()
+      clearInterval(timer)
+    }
+  }, [images.length, isInView])
 
   const handlePrev = () => {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length)
@@ -30,7 +50,7 @@ export function ImageSlider({ images }: ImageSliderProps) {
   }
 
   return (
-    <div className="relative w-full max-w-3xl mx-auto overflow-hidden rounded-lg shadow-lg">
+    <div ref={sliderRef} className="relative w-full max-w-3xl mx-auto overflow-hidden rounded-lg shadow-lg">
       <AnimatePresence initial={false} custom={currentIndex}>
         <motion.div
           key={currentIndex}

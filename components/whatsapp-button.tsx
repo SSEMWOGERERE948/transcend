@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from '@/components/ui/button';
-import { Product } from '@/lib/products';
+import { Product } from '@/lib/scholarships';
 import { MessageCircle } from 'lucide-react';
 
 interface WhatsAppButtonProps {
