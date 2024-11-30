@@ -10,8 +10,8 @@ import { AuthProvider } from '@/contexts/auth-context';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Doda - Crafting Joy, One Stitch at a Time',
-  description: 'Handmade crocheted products, custom orders, and tutorials',
+  title: 'Transcend Education Consults - Your Path to Education',
+  description: 'Discover and apply for scholarships worldwide to further your education',
 };
 
 export default function RootLayout({
