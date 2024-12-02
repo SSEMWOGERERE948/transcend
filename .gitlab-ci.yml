@@ -2,6 +2,7 @@
 stages:
   - build
   - test
+  - docker
 
 # Cache dependencies between jobs
 cache:
@@ -29,3 +30,20 @@ test:
     - npm install
     - npm run test
   coverage: '/Coverage.*?(\d+(?:\.\d+)?)%/' 
+
+docker:
+  stage: docker
+  image: docker:latest
+  services:
+    - docker:dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - docker login gitlab.cranecloud.io:5050 -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+  script:
+    - docker build -t gitlab.cranecloud.io:5050/simon/practice:$CI_COMMIT_SHA .
+    - docker tag gitlab.cranecloud.io:5050/simon/practice:$CI_COMMIT_SHA gitlab.cranecloud.io:5050/simon/practice:latest
+    - docker push gitlab.cranecloud.io:5050/simon/practice:$CI_COMMIT_SHA
+    - docker push gitlab.cranecloud.io:5050/simon/practice:latest
+  only:
+    - main 
