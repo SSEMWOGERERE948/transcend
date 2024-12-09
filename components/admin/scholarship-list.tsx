@@ -118,4 +118,3 @@ export function AdminScholarshipList({ scholarships, setScholarships }: AdminSch
     </div>
   );
 }
-

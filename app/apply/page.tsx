@@ -10,9 +10,9 @@ import { getScholarships, Scholarship } from '@/lib/scholarships';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-
 export default function ApplyNowPage() {
-  const { id } = useParams();
+  const params = useParams();
+  const id = params?.id;
   const router = useRouter();
   const { user, loading } = useAuth();
   const [scholarship, setScholarship] = useState<Scholarship | null>(null);
