@@ -27,7 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const unsubscribe = onAuthStateChange((user) => {
       setUser(user);
 
-      const adminEmail = "strevor948@gmail.com";
+      const adminEmail = "transcendeducationconsults@gmail.com";
       const userEmail = user?.email?.toLowerCase();
 
       const isAdminUser = userEmail === adminEmail;
