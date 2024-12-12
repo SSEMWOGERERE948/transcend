@@ -1,8 +1,7 @@
 'use client';
 
-import React, { Suspense } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
@@ -34,6 +33,7 @@ function ApplyNowPageContent() {
   const [scholarship, setScholarship] = useState<Scholarship | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [submissionSuccess, setSubmissionSuccess] = useState(false); // Success state
   const [formData, setFormData] = useState<{
     fullName: string;
     email: string;
@@ -115,14 +115,13 @@ function ApplyNowPageContent() {
 
       await submitApplication(applicationData as any, photo);
 
-      // Toast notification
       toast.success('Application Submitted Successfully!', {
         description: `Your application for the ${scholarship.program} scholarship has been received. We'll review it and contact you soon.`,
         duration: 5000,
         position: 'top-right',
       });
 
-      router.push('/scholarships');
+      setSubmissionSuccess(true); // Set success state
     } catch (error) {
       console.error('Error submitting application:', error);
       toast.error('Failed to Submit Application', {
@@ -169,6 +168,23 @@ function ApplyNowPageContent() {
     return null;
   }
 
+  if (submissionSuccess) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h1 className="text-3xl font-bold mb-4 text-green-600">
+          Application Submitted Successfully!
+        </h1>
+        <p className="text-lg">
+          Thank you for applying. We will review your application and get back to you shortly.
+        </p>
+        <Link href="/scholarships">
+          <Button variant="outline" className="mt-6">
+            Back to Scholarships
+          </Button>
+        </Link>
+      </div>
+    );
+  }
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
