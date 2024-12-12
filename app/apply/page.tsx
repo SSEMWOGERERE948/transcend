@@ -1,5 +1,6 @@
 'use client';
 
+import React, { Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -25,7 +26,7 @@ interface Scholarship {
   university: string;
 }
 
-export default function ApplyNowPage() {
+function ApplyNowPageContent() {
   const searchParams = useSearchParams();
   const scholarshipId = searchParams?.get('scholarshipId');
   const router = useRouter();
@@ -89,7 +90,6 @@ export default function ApplyNowPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setPhoto(e.target.files[0]);
@@ -99,7 +99,7 @@ export default function ApplyNowPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!scholarship || !photo) return;
-  
+
     try {
       setLoading(true);
       const applicationData = {
@@ -112,16 +112,16 @@ export default function ApplyNowPage() {
         highestLevelOfStudy: formData.highestLevelOfStudy,
         budget: Number(formData.budget),
       };
-  
+
       await submitApplication(applicationData as any, photo);
-      
+
       // Toast notification
       toast.success('Application Submitted Successfully!', {
         description: `Your application for the ${scholarship.program} scholarship has been received. We'll review it and contact you soon.`,
         duration: 5000,
         position: 'top-right',
       });
-      
+
       router.push('/scholarships');
     } catch (error) {
       console.error('Error submitting application:', error);
@@ -249,5 +249,13 @@ export default function ApplyNowPage() {
         </form>
       </div>
     </motion.div>
+  );
+}
+
+export default function ApplyNowPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ApplyNowPageContent />
+    </Suspense>
   );
 }
