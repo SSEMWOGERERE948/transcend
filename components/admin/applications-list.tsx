@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { getApplications, ScholarshipApplication, updateApplicationStatus, getScholarshipById, Scholarship } from '@/lib/scholarships';
+import { getApplications, ScholarshipApplication, updateApplicationStatus } from '@/lib/scholarships';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,12 +11,46 @@ import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
+export interface Scholarship {
+  scholarship_id: string;
+  degree: string;
+  graduation_year: string;
+  language: string;
+  program: string;
+  semester: string;
+  type: string;
+  university: string;
+  deadline: string;
+}
+
+
 export function ApplicationsList() {
   const [applications, setApplications] = useState<ScholarshipApplication[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const [scholarships, setScholarships] = useState<Record<string, Scholarship>>({});
 
+  const fetchScholarshipDetails = async (scholarshipId: string): Promise<Scholarship | null> => {
+    try {
+      const response = await fetch('/scholarship.json');
+      if (!response.ok) {
+        throw new Error('Failed to load scholarships');
+      }
+      
+      const allScholarships: Scholarship[] = await response.json();
+      
+      // Find the scholarship by its ID
+      const scholarship = allScholarships.find(
+        (scholarship) => scholarship.scholarship_id === scholarshipId
+      );
+      
+      return scholarship || null;
+    } catch (error) {
+      console.error('Error fetching scholarship details:', error);
+      return null;
+    }
+  };
+  
   useEffect(() => {
     const fetchApplications = async () => {
       try {
@@ -24,14 +58,17 @@ export function ApplicationsList() {
         setApplications(fetchedApplications);
         
         const scholarshipsMap: Record<string, Scholarship> = {};
+        
+        // Use Promise.all to fetch details for all applications concurrently
         await Promise.all(
           fetchedApplications.map(async (application) => {
-            const scholarship = await getScholarshipById(application.scholarshipId);
+            const scholarship = await fetchScholarshipDetails(application.scholarshipId);
             if (scholarship) {
               scholarshipsMap[application.scholarshipId] = scholarship;
             }
           })
         );
+        
         setScholarships(scholarshipsMap);
       } catch (error) {
         toast({
@@ -43,7 +80,7 @@ export function ApplicationsList() {
         setIsLoading(false);
       }
     };
-
+  
     fetchApplications();
   }, [toast]);
 
@@ -99,33 +136,49 @@ export function ApplicationsList() {
                 </div>
               </AccordionTrigger>
               <AccordionContent className="pt-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-6">
-                    <div className="bg-muted rounded-lg p-6">
-                      <h4 className="text-lg font-semibold mb-4">Scholarship Details</h4>
-                      {scholarships[application.scholarshipId] ? (
-                        <div className="space-y-2">
-                          <p className="flex justify-between">
-                            <span className="text-muted-foreground">Name</span>
-                            <span className="font-medium">{scholarships[application.scholarshipId].name}</span>
-                          </p>
-                          <p className="flex justify-between">
-                            <span className="text-muted-foreground">Country</span>
-                            <span className="font-medium">{scholarships[application.scholarshipId].country}</span>
-                          </p>
-                          <p className="flex justify-between">
-                            <span className="text-muted-foreground">Level</span>
-                            <span className="font-medium">{scholarships[application.scholarshipId].level}</span>
-                          </p>
-                          <p className="flex justify-between">
-                            <span className="text-muted-foreground">Funding Type</span>
-                            <span className="font-medium">{scholarships[application.scholarshipId].fundingType}</span>
-                          </p>
-                        </div>
-                      ) : (
-                        <p className="text-muted-foreground">Scholarship details not available</p>
-                      )}
-                    </div>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-6">
+      <div className="bg-muted rounded-lg p-6">
+        <h4 className="text-lg font-semibold mb-4">Scholarship Details</h4>
+        {scholarships[application.scholarshipId] ? (
+          <div className="space-y-2">
+            <p className="flex justify-between">
+              <span className="text-muted-foreground">Degree</span>
+              <span className="font-medium">{scholarships[application.scholarshipId].degree}</span>
+            </p>
+            <p className="flex justify-between">
+              <span className="text-muted-foreground">Graduation Year</span>
+              <span className="font-medium">{scholarships[application.scholarshipId].graduation_year}</span>
+            </p>
+            <p className="flex justify-between">
+              <span className="text-muted-foreground">Language</span>
+              <span className="font-medium">{scholarships[application.scholarshipId].language}</span>
+            </p>
+            <p className="flex justify-between">
+              <span className="text-muted-foreground">Program</span>
+              <span className="font-medium">{scholarships[application.scholarshipId].program}</span>
+            </p>
+            <p className="flex justify-between">
+              <span className="text-muted-foreground">Semester</span>
+              <span className="font-medium">{scholarships[application.scholarshipId].semester}</span>
+            </p>
+            <p className="flex justify-between">
+              <span className="text-muted-foreground">Type</span>
+              <span className="font-medium">{scholarships[application.scholarshipId].type}</span>
+            </p>
+            <p className="flex justify-between">
+              <span className="text-muted-foreground">University</span>
+              <span className="font-medium">{scholarships[application.scholarshipId].university}</span>
+            </p>
+            <p className="flex justify-between">
+              <span className="text-muted-foreground">Deadline</span>
+              <span className="font-medium">{scholarships[application.scholarshipId].deadline}</span>
+            </p>
+          </div>
+        ) : (
+          <p className="text-muted-foreground">Scholarship details not available</p>
+        )}
+      </div>
 
                     <div className="bg-muted rounded-lg p-6">
                       <h4 className="text-lg font-semibold mb-4">Applicant Details</h4>

@@ -9,9 +9,14 @@ export function ScholarshipFilter({
   selectedCountry,
   onCountryChange,
 }: ScholarshipFilterProps) {
+  const formatCountry = (country: string) => {
+    if (!country) return '';
+    return country.charAt(0).toUpperCase() + country.slice(1);
+  };
+
   return (
     <div className="flex gap-2 overflow-x-auto pb-2">
-      {countries.map((country) => (
+      {countries.filter(Boolean).map((country) => (
         <button
           key={country}
           onClick={() => onCountryChange(country)}
@@ -22,7 +27,7 @@ export function ScholarshipFilter({
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
         >
-          {country.charAt(0).toUpperCase() + country.slice(1)}
+          {formatCountry(country)}
         </button>
       ))}
     </div>

@@ -33,6 +33,8 @@ export function ScholarshipCard({ scholarship }: ScholarshipCardProps) {
           alt={scholarship.name}
           fill
           className="object-cover transition-transform hover:scale-105"
+          priority
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
       </div>
       <CardContent className="p-4">

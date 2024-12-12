@@ -76,7 +76,7 @@ export function AdminScholarshipForm({ scholarship, onSuccess }: AdminScholarshi
         if (!imageFile) {
           throw new Error('Image is required for new scholarships');
         }
-        result = await addScholarship(scholarshipData, imageFile);
+        result = await addScholarship(scholarshipData as Omit<Scholarship, "id">, imageFile);
       }
 
       onSuccess(result as Scholarship);

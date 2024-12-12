@@ -1,47 +1,40 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Scholarship, getScholarships } from '@/lib/scholarships';
 import { ApplicationForm } from '@/components/scholarships/application-form';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getScholarshipById } from '@/lib/scholarships';
 
-export default function ApplyPage({ params }: { params: { id: string } }) {
-  const [scholarship, setScholarship] = useState<Scholarship | null>(null);
-  const router = useRouter();
+export default function ApplyPage({ params }: { params: { scholarship_id: string } }) {
+  const [scholarship, setScholarship] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadScholarship = async () => {
-      const scholarships = await getScholarships();
-      const found = scholarships.find(s => s.id === params.id);
-      if (!found) {
-        router.push('/scholarships');
-        return;
+    async function loadScholarship() {
+      try {
+        const data = await getScholarshipById(params.scholarship_id);
+        setScholarship(data);
+      } catch (error) {
+        console.error('Error loading scholarship:', error);
+      } finally {
+        setIsLoading(false);
       }
-      setScholarship(found);
-    };
+    }
 
     loadScholarship();
-  }, [params.id, router]);
+  }, [params.scholarship_id]);
 
-  if (!scholarship) {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
+  if (!scholarship) {
+    return <div>Scholarship not found</div>;
+  }
+
   return (
-    <div className="container mx-auto py-12 px-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Apply for {scholarship.name}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ApplicationForm
-            scholarshipId={scholarship.id}
-            scholarshipName={scholarship.name}
-          />
-        </CardContent>
-      </Card>
-    </div>
+    <ApplicationForm 
+      scholarshipId={params.scholarship_id}
+      scholarshipName={scholarship.name || 'Scholarship'}
+    />
   );
 }
-

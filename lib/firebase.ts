@@ -3,13 +3,13 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBJpDk7Db5I5fcXYdEjVHNJewXOvD0pvw8",
-  authDomain: "transcend-28bd6.firebaseapp.com",
-  projectId: "transcend-28bd6",
-  storageBucket: "transcend-28bd6.firebasestorage.app",
-  messagingSenderId: "211502500156",
-  appId: "1:211502500156:web:6a3cc18729739983127639",
-  measurementId: "G-TKD2066DMM"
+  apiKey: "AIzaSyC7WL-M9gtn7EorfkNtj3rEGd_uejLCidA",
+  authDomain: "transcend-edu.firebaseapp.com",
+  projectId: "transcend-edu",
+  storageBucket: "transcend-edu.firebasestorage.app",
+  messagingSenderId: "623639368900",
+  appId: "1:623639368900:web:0dc1fcf4e714952a4de591",
+  measurementId: "G-0SX0296MHD"
 };
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];

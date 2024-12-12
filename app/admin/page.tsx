@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { GraduationCap, PlusCircle, Users } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ApplicationsList } from '@/components/admin/applications-list';
+import { UploadScholarshipsButton } from '@/components/admin/upload-scholarships-button';
 
 export default function AdminDashboard() {
   const [scholarships, setScholarships] = useState<Scholarship[]>([]);
@@ -49,22 +50,25 @@ export default function AdminDashboard() {
       transition={{ duration: 0.5 }}
       className="container mx-auto py-12 px-4 sm:px-6 lg:px-8"
     >
-      <h1 className="text-4xl font-bold mb-8 text-blue-800">Admin Dashboard</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-4xl font-bold text-blue-800">Admin Dashboard</h1>
+        {/* <UploadScholarshipsButton /> */}
+      </div>
       
       <Tabs defaultValue="scholarships" className="space-y-8">
         <TabsList className="bg-blue-100 p-1 rounded-lg">
-          <TabsTrigger value="scholarships" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
+          {/* <TabsTrigger value="scholarships" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
             <GraduationCap className="w-5 h-5 mr-2" />
             Scholarships
-          </TabsTrigger>
+          </TabsTrigger> */}
           <TabsTrigger value="applications" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
             <Users className="w-5 h-5 mr-2" />
             Applications
           </TabsTrigger>
-          <TabsTrigger value="add" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
+          {/* <TabsTrigger value="add" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
             <PlusCircle className="w-5 h-5 mr-2" />
             Add Scholarship
-          </TabsTrigger>
+          </TabsTrigger> */}
         </TabsList>
 
         <TabsContent value="scholarships">

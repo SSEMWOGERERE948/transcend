@@ -1,127 +1,234 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { Scholarship, getScholarships } from '@/lib/scholarships';
-import { ScholarshipCard } from '@/components/scholarships/scholarship-card';
-import { ScholarshipFilter } from '@/components/scholarships/scholarship-filter';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+import { useEffect, useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Eye, ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
-export default function ScholarshipsPage() {
+export interface Scholarship {
+  scholarship_id: string;
+  degree: string;
+  graduation_year: string;
+  language: string;
+  program: string;
+  semester: string;
+  type: string;
+  university: string;
+  deadline: string;
+}
+
+export default function ScholarshipsTablePage() {
   const [scholarships, setScholarships] = useState<Scholarship[]>([]);
   const [filteredScholarships, setFilteredScholarships] = useState<Scholarship[]>([]);
-  const [selectedCountry, setSelectedCountry] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [allScholarships, setAllScholarships] = useState<Scholarship[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    const loadScholarships = async () => {
-      try {
-        const fetchedScholarships = await getScholarships();
-        setScholarships(fetchedScholarships);
-        setFilteredScholarships(fetchedScholarships);
-      } catch (error) {
-        console.error('Error loading scholarships:', error);
-      } finally {
-        setIsLoading(false);
+  const pageSize = 10;
+
+  const getScholarshipStatus = (deadline: string): "Open" | "Closed" => {
+    const deadlineDate = new Date(deadline);
+    const today = new Date();
+    return deadlineDate >= today ? "Open" : "Closed";
+  };
+
+  const loadAllScholarships = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/scholarship.json");
+      if (!response.ok) {
+        throw new Error("Failed to load scholarships.json");
       }
-    };
+      const allScholarshipsData: Scholarship[] = await response.json();
 
-    loadScholarships();
-  }, []);
-
-  useEffect(() => {
-    let filtered = scholarships;
-
-    if (selectedCountry !== 'all') {
-      filtered = filtered.filter(scholarship => scholarship.country === selectedCountry);
+      setAllScholarships(allScholarshipsData);
+      setFilteredScholarships(allScholarshipsData);
+      setTotalPages(Math.ceil(allScholarshipsData.length / pageSize));
+      setScholarships(allScholarshipsData.slice(0, pageSize));
+    } catch (error) {
+      console.error("Error loading scholarships:", error);
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    if (searchQuery) {
-      filtered = filtered.filter(scholarship =>
-        scholarship.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        scholarship.description.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
+  const loadScholarshipsForPage = (page: number, data: Scholarship[] = filteredScholarships) => {
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+
+    setScholarships(data.slice(startIndex, endIndex));
+    setCurrentPage(page);
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+
+    const filtered = allScholarships.filter((scholarship) =>
+      Object.values(scholarship).some((value) =>
+        value.toLowerCase().includes(query.toLowerCase())
+      )
+    );
 
     setFilteredScholarships(filtered);
-  }, [selectedCountry, searchQuery, scholarships]);
+    setTotalPages(Math.ceil(filtered.length / pageSize));
+    loadScholarshipsForPage(1, filtered);
+  };
 
-  const countries = ['all', ...Array.from(new Set(scholarships.map(scholarship => scholarship.country)))];
+  useEffect(() => {
+    loadAllScholarships();
+  }, []);
 
-  if (isLoading) {
-    return (
-      <div className="container mx-auto py-16 text-center">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="animate-pulse text-2xl font-semibold text-blue-600"
-        >
-          Loading scholarships...
-        </motion.div>
-      </div>
-    );
-  }
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    const maxPagesToShow = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+    if (endPage - startPage + 1 < maxPagesToShow) {
+      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+
+    return pageNumbers;
+  };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="container mx-auto py-12 px-4 sm:px-6 lg:px-8"
-    >
-      <h1 className="text-4xl font-bold text-center mb-12 text-blue-800">Available Scholarships</h1>
-      
-      <div className="flex flex-col md:flex-row gap-6 mb-12">
-        <div className="relative flex-1">
-          <Input
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          Scholarships
+          {isLoading ? " (Loading...)" : ` (${allScholarships.length} total)`}
+        </CardTitle>
+        <input
             type="text"
             placeholder="Search scholarships..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-white border-blue-300 focus:border-blue-500 focus:ring-blue-500"
+            onChange={(e) => handleSearch(e.target.value)}
+            className="
+              pl-10 pr-10 py-2 
+              w-full 
+              border border-gray-300 
+              rounded-lg 
+              focus:outline-none 
+              focus:ring-2 
+              focus:ring-blue-500 
+              focus:border-transparent 
+              transition-all 
+              duration-300 
+              ease-in-out
+            "
           />
-          <Search className="absolute left-3 top-2.5 h-5 w-5 text-blue-400" />
-        </div>
-        <ScholarshipFilter
-          countries={countries}
-          selectedCountry={selectedCountry}
-          onCountryChange={setSelectedCountry}
-        />
-      </div>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Degree</TableHead>
+              <TableHead>Graduation Year</TableHead>
+              <TableHead>Language</TableHead>
+              <TableHead>Program</TableHead>
+              <TableHead>Scholarship ID</TableHead>
+              <TableHead>Semester</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>City</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Deadline</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {scholarships.map((scholarship) => {
+              const status = getScholarshipStatus(scholarship.deadline);
+              return (
+                <TableRow key={scholarship.scholarship_id}>
+                  <TableCell>{scholarship.degree}</TableCell>
+                  <TableCell>{scholarship.graduation_year}</TableCell>
+                  <TableCell>{scholarship.language}</TableCell>
+                  <TableCell>{scholarship.program}</TableCell>
+                  <TableCell>{scholarship.scholarship_id}</TableCell>
+                  <TableCell>{scholarship.semester}</TableCell>
+                  <TableCell>{scholarship.type}</TableCell>
+                  <TableCell>{scholarship.university}</TableCell>
+                  <TableCell>
+                    <Badge
+                      className={
+                        status === "Open"
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : "bg-red-500 text-white hover:bg-red-600"
+                      }
+                    >
+                      {status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{scholarship.deadline}</TableCell>
+                  <TableCell>
+                    <Link href={`/apply?scholarshipId=${scholarship.scholarship_id}`}>
+                      <Button
+                        size="sm"
+                        variant="default"
+                        disabled={getScholarshipStatus(scholarship.deadline) === "Closed"}
+                      >
+                        Apply
+                      </Button>
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
 
-      {filteredScholarships.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center py-16"
-        >
-          <p className="text-xl text-gray-600">No scholarships found. Please try a different search or filter.</p>
-        </motion.div>
-      ) : (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {filteredScholarships.map((scholarship, index) => (
-            <motion.div
-              key={scholarship.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+        <div className="flex justify-center items-center mt-4 space-x-2">
+          <Button
+            onClick={() => loadScholarshipsForPage(currentPage - 1)}
+            disabled={currentPage === 1 || isLoading}
+            variant="outline"
+            size="icon"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+
+          {getPageNumbers().map((pageNumber) => (
+            <Button
+              key={pageNumber}
+              onClick={() => loadScholarshipsForPage(pageNumber)}
+              variant={currentPage === pageNumber ? "default" : "outline"}
+              disabled={isLoading}
             >
-              <ScholarshipCard scholarship={scholarship} />
-            </motion.div>
+              {pageNumber}
+            </Button>
           ))}
-        </motion.div>
-      )}
-    </motion.div>
+
+          <Button
+            onClick={() => loadScholarshipsForPage(currentPage + 1)}
+            disabled={currentPage === totalPages || isLoading}
+            variant="outline"
+            size="icon"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
-
