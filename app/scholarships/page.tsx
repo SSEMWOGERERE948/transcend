@@ -17,8 +17,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Eye, ChevronLeft, ChevronRight } from "lucide-react";
-import Link from "next/link";
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export interface Scholarship {
   scholarship_id: string;
@@ -40,6 +40,9 @@ export default function ScholarshipsTablePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [allScholarships, setAllScholarships] = useState<Scholarship[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"All" | "Open" | "Closed">("All");
+  const [degreeFilter, setDegreeFilter] = useState<string>("All");
+  const router = useRouter();
 
   const pageSize = 10;
 
@@ -79,12 +82,28 @@ export default function ScholarshipsTablePage() {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
+    filterScholarships(query, statusFilter, degreeFilter);
+  };
 
-    const filtered = allScholarships.filter((scholarship) =>
-      Object.values(scholarship).some((value) =>
+  const handleStatusFilter = (status: "All" | "Open" | "Closed") => {
+    setStatusFilter(status);
+    filterScholarships(searchQuery, status, degreeFilter);
+  };
+
+  const handleDegreeFilter = (degree: string) => {
+    setDegreeFilter(degree);
+    filterScholarships(searchQuery, statusFilter, degree);
+  };
+
+  const filterScholarships = (query: string, status: "All" | "Open" | "Closed", degree: string) => {
+    const filtered = allScholarships.filter((scholarship) => {
+      const matchesQuery = Object.values(scholarship).some((value) =>
         value.toLowerCase().includes(query.toLowerCase())
-      )
-    );
+      );
+      const matchesStatus = status === "All" || getScholarshipStatus(scholarship.deadline) === status;
+      const matchesDegree = degree === "All" || scholarship.degree === degree;
+      return matchesQuery && matchesStatus && matchesDegree;
+    });
 
     setFilteredScholarships(filtered);
     setTotalPages(Math.ceil(filtered.length / pageSize));
@@ -112,6 +131,14 @@ export default function ScholarshipsTablePage() {
     return pageNumbers;
   };
 
+  const handleApply = (scholarshipId: string, status: "Open" | "Closed") => {
+    if (status === "Open") {
+      router.push(`/apply?scholarshipId=${scholarshipId}`);
+    }
+  };
+
+  const degreeOptions = ["All Degrees", "Bachelor", "Master", "PhD"];
+
   return (
     <Card>
       <CardHeader>
@@ -119,13 +146,14 @@ export default function ScholarshipsTablePage() {
           Scholarships
           {isLoading ? " (Loading...)" : ` (${allScholarships.length} total)`}
         </CardTitle>
-        <input
+        <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+          <input
             type="text"
             placeholder="Search scholarships..."
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
             className="
-              pl-10 pr-10 py-2 
+              pl-4 pr-10 py-2 
               w-full 
               border border-gray-300 
               rounded-lg 
@@ -138,6 +166,49 @@ export default function ScholarshipsTablePage() {
               ease-in-out
             "
           />
+          <select
+            value={statusFilter}
+            onChange={(e) => handleStatusFilter(e.target.value as "All" | "Open" | "Closed")}
+            className="
+              pl-4 pr-10 py-2
+              border border-gray-300
+              rounded-lg
+              focus:outline-none
+              focus:ring-2
+              focus:ring-blue-500
+              focus:border-transparent
+              transition-all
+              duration-300
+              ease-in-out
+            "
+          >
+            <option value="All">All Status</option>
+            <option value="Open">Open</option>
+            <option value="Closed">Closed</option>
+          </select>
+          <select
+            value={degreeFilter}
+            onChange={(e) => handleDegreeFilter(e.target.value)}
+            className="
+              pl-4 pr-10 py-2
+              border border-gray-300
+              rounded-lg
+              focus:outline-none
+              focus:ring-2
+              focus:ring-blue-500
+              focus:border-transparent
+              transition-all
+              duration-300
+              ease-in-out
+            "
+          >
+            {degreeOptions.map((degree) => (
+              <option key={degree} value={degree}>
+                {degree}
+              </option>
+            ))}
+          </select>
+        </div>
       </CardHeader>
       <CardContent>
         <Table>
@@ -182,15 +253,14 @@ export default function ScholarshipsTablePage() {
                   </TableCell>
                   <TableCell>{scholarship.deadline}</TableCell>
                   <TableCell>
-                    <Link href={`/apply?scholarshipId=${scholarship.scholarship_id}`}>
-                      <Button
-                        size="sm"
-                        variant="default"
-                        disabled={getScholarshipStatus(scholarship.deadline) === "Closed"}
-                      >
-                        Apply
-                      </Button>
-                    </Link>
+                    <Button
+                      size="sm"
+                      variant="default"
+                      disabled={status === "Closed"}
+                      onClick={() => handleApply(scholarship.scholarship_id, status)}
+                    >
+                      Apply
+                    </Button>
                   </TableCell>
                 </TableRow>
               );
@@ -232,3 +302,4 @@ export default function ScholarshipsTablePage() {
     </Card>
   );
 }
+
